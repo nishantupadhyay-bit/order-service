@@ -1,5 +1,6 @@
 package com.assignment.orderservice.service;
 
+import com.assignment.orderservice.exception.InvalidOrderException;
 import com.assignment.orderservice.exception.OrderNotFoundException;
 import com.assignment.orderservice.model.OrderEntity;
 import com.assignment.orderservice.model.OrderStatus;
@@ -18,6 +19,7 @@ public class OrderService {
     }
 
     public OrderEntity createOrder(OrderEntity order) {
+        validateOrder(order);
         order.setStatus(OrderStatus.PENDING);
         return orderRepository.save(order);
     }
@@ -29,5 +31,23 @@ public class OrderService {
 
     public List<OrderEntity> getAllOrders() {
         return orderRepository.findAll();
+    }
+
+    private void validateOrder(OrderEntity order) {
+        if (order == null) {
+            throw new InvalidOrderException("Order must not be null");
+        }
+
+        if (order.getUserId() == null || order.getUserId() <= 0) {
+            throw new InvalidOrderException("User ID must be positive");
+        }
+
+        if (order.getProductId() == null || order.getProductId() <= 0) {
+            throw new InvalidOrderException("Product ID must be positive");
+        }
+
+        if (order.getQuantity() == null || order.getQuantity() <= 0) {
+            throw new InvalidOrderException("Quantity must be positive");
+        }
     }
 }
