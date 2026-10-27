@@ -33,6 +33,14 @@ public class OrderService {
         return orderRepository.findAll();
     }
 
+    public List<OrderEntity> getOrdersByUserId(Long userId) {
+        if (userId == null || userId <= 0) {
+            throw new InvalidOrderException("User ID must be positive");
+        }
+
+        return orderRepository.findByUserId(userId);
+    }
+
     private void validateOrder(OrderEntity order) {
         if (order == null) {
             throw new InvalidOrderException("Order must not be null");
